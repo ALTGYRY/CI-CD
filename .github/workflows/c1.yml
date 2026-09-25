@@ -1,0 +1,48 @@
+name: C++ CI
+
+on:
+  push:
+    branches:
+      - main
+      - feature/github_actions
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download source code
+        uses: actions/checkout@v6
+
+      - name: Configure CMake
+        run: >
+          cmake
+          -S .
+          -B build
+          -DCMAKE_BUILD_TYPE=Release
+          -DPATCH_VERSION=${{ github.run_number }}
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Create Debian package
+        run: cmake --build build --target package
+
+      - name: Save Debian package
+        uses: actions/upload-artifact@v4
+        with:
+          name: helloworld-deb
+          path: build/*.deb
+          if-no-files-found: error
