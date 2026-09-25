@@ -1,6 +1,8 @@
-#include<gtest/gtest.h>
+#include <gtest/gtest.h>
+
 #include "lib.h"
 
-TEST(VersionTest, TestVersion){
-    EXPECT_LT(0,version());
+TEST(VersionTest, VersionIsPositive)
+{
+    EXPECT_GT(version(), 0);
 }
