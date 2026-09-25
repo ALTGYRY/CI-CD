@@ -37,12 +37,15 @@ jobs:
       - name: Run tests
         run: ctest --test-dir build --output-on-failure
 
-      - name: Create Debian package
+      - name: Package
         run: cmake --build build --target package
 
-      - name: Save Debian package
-        uses: actions/upload-artifact@v4
-        with:
-          name: helloworld-deb
-          path: build/*.deb
-          if-no-files-found: error
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v0.0.${{ github.run_number }}" \
+            build/*.deb \
+            --target "${{ github.sha }}" \
+            --title "Release 0.0.${{ github.run_number }}" \
+            --notes "Automatic build ${{ github.run_number }}"
