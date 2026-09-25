@@ -3,8 +3,8 @@
 #include <iostream>
 
 int main (int, char **) {
-    auto closure = [c = 100](int a,int b) {return c + a + b;};
-    std::cout << closure(1,2) << "\n";
-
+    std::cout << "build " << version() << "\n";
+    std::cout << "Hello, World!\n";
+    return 0;
 }
 //choto choto
