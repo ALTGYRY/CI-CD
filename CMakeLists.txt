@@ -34,7 +34,12 @@ configure_file(
 )
 
 add_library(helloworld lib.cpp)
-
+add_library(somelib source/somelib.cpp)
+target_include_directories(
+    somelib
+    PUBLIC
+        include
+)
 target_include_directories(
     helloworld
     PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -45,7 +50,7 @@ add_executable(helloworld_cli main.cpp)
 
 target_link_libraries(
     helloworld_cli
-    PRIVATE helloworld
+    PRIVATE helloworld somelib
 )
 
 # Тестовая программа
@@ -62,6 +67,7 @@ if(MSVC)
     target_compile_options(helloworld_cli PRIVATE /W4)
     target_compile_options(helloworld PRIVATE /W4)
     target_compile_options(test_version PRIVATE /W4)
+    target_compile_options(somelib PRIVATE /W4)
 else()
     target_compile_options(
         helloworld_cli PRIVATE
@@ -75,6 +81,8 @@ else()
         test_version PRIVATE
         -Wall -Wextra -Wpedantic -Werror
     )
+    target_compile_options(somelib PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    
 endif()
 
 # Подключение тестов к CTest
